@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Trivia Fetch! 🐾</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ============ SPLASH SCREEN ============ -->
+    <div id="screen-splash" class="screen active">
+        <div class="splash-bg">
+            <div class="floating-paws"></div>
+            <div class="splash-content">
+                <div class="logo-container">
+                    <div id="waffles-logo" class="waffles-logo"></div>
+                    <h1 class="game-title">Trivia Fetch!</h1>
+                    <p class="game-tagline">🐾 Fetch the Crown! 🐾</p>
+                </div>
+                <button class="btn btn-primary btn-bounce" id="btn-play">
+                    <span class="btn-icon">▶</span> Let's Play!
+                </button>
+                <button class="btn btn-secondary" id="btn-how-to-play">
+                    <span class="btn-icon">❓</span> How to Play
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ HOW TO PLAY SCREEN ============ -->
+    <div id="screen-howto" class="screen">
+        <div class="screen-inner howto-screen">
+            <button class="btn-back" id="btn-back-howto">← Back</button>
+            <h2 class="screen-title">How to Play</h2>
+            <div class="howto-scroll">
+                <div class="howto-card">
+                    <div class="howto-icon">🎡</div>
+                    <h3>Spin the Wheel!</h3>
+                    <p>Tap to spin and land on one of 8 trivia categories. Each spin is a new adventure!</p>
+                </div>
+                <div class="howto-card">
+                    <div class="howto-icon">🧠</div>
+                    <h3>Answer Questions</h3>
+                    <p>Waffles fetches a question just for you — powered by AI, so every game is unique!</p>
+                </div>
+                <div class="howto-card">
+                    <div class="howto-icon">🐾</div>
+                    <h3>Collect Paw Stamps</h3>
+                    <p>Get it right? Earn that category's paw stamp! Keep your streak alive for bonus spins!</p>
+                </div>
+                <div class="howto-card">
+                    <div class="howto-icon">⚔️</div>
+                    <h3>Crown Challenge!</h3>
+                    <p>Land on the special space? Challenge your opponent and steal one of their paw stamps!</p>
+                </div>
+                <div class="howto-card">
+                    <div class="howto-icon">🌟</div>
+                    <h3>Waffles' Wild!</h3>
+                    <p>Waffles picks a wacky surprise question from ANY category. Anything goes!</p>
+                </div>
+                <div class="howto-card">
+                    <div class="howto-icon">👑</div>
+                    <h3>Win the Crown!</h3>
+                    <p>First player to collect all 8 paw stamps earns The Golden Crown and victory pets from Waffles!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ MODE SELECT SCREEN ============ -->
+    <div id="screen-mode" class="screen">
+        <div class="screen-inner">
+            <button class="btn-back" id="btn-back-mode">← Back</button>
+            <div class="waffles-mini" id="waffles-mode"></div>
+            <h2 class="screen-title">Choose Your Game!</h2>
+            <div class="mode-cards">
+                <button class="mode-card" id="btn-mode-solo">
+                    <div class="mode-icon">🐾</div>
+                    <h3>Solo Practice</h3>
+                    <p>Just you & Waffles! Practice your trivia skills.</p>
+                </button>
+                <button class="mode-card" id="btn-mode-friends">
+                    <div class="mode-icon">👥</div>
+                    <h3>Play with Friends</h3>
+                    <p>Challenge your pack! Head-to-head trivia battle.</p>
+                </button>
+                <button class="mode-card" id="btn-mode-random">
+                    <div class="mode-icon">🌎</div>
+                    <h3>Random Opponent</h3>
+                    <p>Match with a stranger and show your stuff!</p>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ LOBBY SCREEN ============ -->
+    <div id="screen-lobby" class="screen">
+        <div class="screen-inner">
+            <button class="btn-back" id="btn-back-lobby">← Back</button>
+            <h2 class="screen-title">Game Lobby</h2>
+            <div class="lobby-container">
+                <div class="lobby-code-section">
+                    <p class="lobby-label">Room Code</p>
+                    <div class="lobby-code" id="lobby-code">----</div>
+                    <div class="lobby-actions">
+                        <button class="btn btn-small" id="btn-create-room">Create Room</button>
+                        <button class="btn btn-small btn-secondary" id="btn-join-room">Join Room</button>
+                    </div>
+                    <div class="join-input-section hidden" id="join-section">
+                        <input type="text" id="input-room-code" class="lobby-input" placeholder="Enter room code" maxlength="6">
+                        <button class="btn btn-small" id="btn-submit-join">Join!</button>
+                    </div>
+                </div>
+                <div class="lobby-players" id="lobby-players">
+                    <div class="lobby-player-slot">
+                        <div class="player-avatar you">🐕</div>
+                        <span class="player-name" id="player1-name">You</span>
+                        <span class="player-ready">✓ Ready</span>
+                    </div>
+                    <div class="lobby-player-slot waiting" id="player2-slot">
+                        <div class="player-avatar">⏳</div>
+                        <span class="player-name">Waiting for opponent...</span>
+                    </div>
+                </div>
+                <div class="name-input-section">
+                    <label class="lobby-label">Your Name</label>
+                    <input type="text" id="input-player-name" class="lobby-input" placeholder="Enter your name" maxlength="16" value="">
+                </div>
+                <button class="btn btn-primary btn-large hidden" id="btn-start-game">
+                    🎉 Start Game!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ GAME BOARD SCREEN ============ -->
+    <div id="screen-game" class="screen">
+        <div class="game-container">
+            <!-- Top HUD -->
+            <div class="game-hud">
+                <div class="hud-player hud-left" id="hud-player1">
+                    <div class="hud-avatar">🐕</div>
+                    <div class="hud-info">
+                        <span class="hud-name" id="hud-name1">Player 1</span>
+                        <div class="hud-paws" id="hud-paws1"></div>
+                    </div>
+                </div>
+                <div class="hud-center">
+                    <div class="turn-indicator" id="turn-indicator">Your Turn!</div>
+                    <div class="streak-counter hidden" id="streak-counter">
+                        🔥 Streak: <span id="streak-num">0</span>
+                    </div>
+                </div>
+                <div class="hud-player hud-right" id="hud-player2">
+                    <div class="hud-info">
+                        <span class="hud-name" id="hud-name2">Player 2</span>
+                        <div class="hud-paws" id="hud-paws2"></div>
+                    </div>
+                    <div class="hud-avatar">🐕</div>
+                </div>
+            </div>
+
+            <!-- Waffles Host Bar -->
+            <div class="waffles-bar" id="waffles-bar">
+                <div class="waffles-face" id="waffles-game-face"></div>
+                <div class="waffles-speech" id="waffles-speech">
+                    <p id="waffles-text">Spin the wheel, friend! Let's see what category fate has in store! 🐾</p>
+                </div>
+            </div>
+
+            <!-- Wheel Area -->
+            <div class="wheel-area" id="wheel-area">
+                <div class="wheel-container">
+                    <div class="wheel-pointer">▼</div>
+                    <canvas id="wheel-canvas" width="340" height="340"></canvas>
+                    <button class="wheel-spin-btn" id="btn-spin">
+                        <span>SPIN!</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Question Area (hidden by default) -->
+            <div class="question-area hidden" id="question-area">
+                <div class="question-category" id="question-category">
+                    <span class="cat-icon" id="cat-icon">🏰</span>
+                    <span class="cat-name" id="cat-name">Disney</span>
+                </div>
+                <div class="question-timer">
+                    <div class="timer-bar" id="timer-bar"></div>
+                </div>
+                <div class="question-text" id="question-text">
+                    Loading question...
+                </div>
+                <div class="answer-grid" id="answer-grid">
+                    <!-- Answers populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Result Overlay -->
+            <div class="result-overlay hidden" id="result-overlay">
+                <div class="result-content">
+                    <div class="result-icon" id="result-icon">✅</div>
+                    <h2 class="result-title" id="result-title">Correct!</h2>
+                    <p class="result-detail" id="result-detail">You earned a Disney paw stamp!</p>
+                    <div class="result-waffles" id="result-waffles-text">Good boy! I mean... good human!</div>
+                    <button class="btn btn-primary" id="btn-continue">Continue</button>
+                </div>
+            </div>
+
+            <!-- Crown Challenge Overlay -->
+            <div class="challenge-overlay hidden" id="challenge-overlay">
+                <div class="challenge-content">
+                    <div class="challenge-icon">⚔️👑</div>
+                    <h2>Crown Challenge!</h2>
+                    <p>Steal a paw stamp from your opponent!</p>
+                    <p class="challenge-sub">Pick a category to challenge:</p>
+                    <div class="challenge-categories" id="challenge-categories"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ VICTORY SCREEN ============ -->
+    <div id="screen-victory" class="screen">
+        <div class="victory-container">
+            <div class="confetti-layer" id="confetti-layer"></div>
+            <div class="victory-content">
+                <div class="victory-crown">👑</div>
+                <h1 class="victory-title">THE GOLDEN CROWN!</h1>
+                <div class="victory-waffles" id="victory-waffles"></div>
+                <p class="victory-winner" id="victory-winner">Player 1 Wins!</p>
+                <div class="victory-stats" id="victory-stats">
+                    <div class="stat"><span class="stat-num" id="stat-correct">0</span><span class="stat-label">Correct</span></div>
+                    <div class="stat"><span class="stat-num" id="stat-streak">0</span><span class="stat-label">Best Streak</span></div>
+                    <div class="stat"><span class="stat-num" id="stat-challenges">0</span><span class="stat-label">Challenges Won</span></div>
+                </div>
+                <div class="victory-paws" id="victory-paws"></div>
+                <button class="btn btn-primary btn-large" id="btn-play-again">🐾 Play Again!</button>
+                <button class="btn btn-secondary" id="btn-main-menu">Main Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ SCRIPTS ============ -->
+    <script src="js/config.js"></script>
+    <script src="js/waffles.js"></script>
+    <script src="js/wheel.js"></script>
+    <script src="js/questions.js"></script>
+    <script src="js/gemini.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/multiplayer.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

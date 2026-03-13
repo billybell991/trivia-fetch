@@ -1,0 +1,11 @@
+{
+  "name": "trivia-fetch-server",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "express": "^4.21.0",
+    "socket.io": "^4.7.5",
+    "dotenv": "^16.4.0",
+    "@google/generative-ai": "^0.21.0"
+  }
+}
