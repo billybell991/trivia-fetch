@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { createRoom, getRoom, getRoomByPlayer, getRoomByPlayerId, deleteRoom } from './game.js';
 import { CATEGORIES, WHEEL_SEGMENTS, getGusReaction } from './trivia.js';
+import { generateAllAssets, getMissingAssets, allAssetsExist } from './generate-assets.js';
 
 dotenv.config();
 
@@ -20,6 +21,15 @@ const io = new Server(server, {
     origin: process.env.NODE_ENV === 'production' ? false : ['http://localhost:5173', `http://localhost:${PORT}`],
     methods: ['GET', 'POST'],
   },
+});
+
+// Serve generated images from client/public/images
+app.use('/images', express.static(path.join(__dirname, '..', 'client', 'public', 'images')));
+
+// API: check asset status
+app.get('/api/assets/status', (req, res) => {
+  const missing = getMissingAssets();
+  res.json({ complete: missing.length === 0, missing });
 });
 
 // Serve built client
@@ -97,8 +107,16 @@ io.on('connection', (socket) => {
 
     socket.join(code);
     const players = room.getPlayerList();
-    callback({ roomCode: code, players });
-    socket.to(code).emit('player-joined', { players });
+
+    // If game is in progress, send full state so they can spectate/join
+    if (room.state !== 'LOBBY') {
+      const fullState = room.getFullState(socket.id);
+      callback({ roomCode: code, players, gameInProgress: true, ...fullState });
+      socket.to(code).emit('player-joined', { players });
+    } else {
+      callback({ roomCode: code, players });
+      socket.to(code).emit('player-joined', { players });
+    }
     console.log(`🐾 ${name} joined room ${code}`);
   });
 
@@ -250,10 +268,18 @@ io.on('connection', (socket) => {
       pawStamps: result.pawStamps,
     });
 
-    sendGusReaction(room, 'stamp', {
-      playerName: player?.name,
-      detail: `chose the ${result.stampEarned} stamp from Gus's Wild!`,
-    });
+    if (result.gameWon) {
+      sendGusReaction(room, 'win', { playerName: player?.name });
+      io.to(room.roomCode).emit('game-over', {
+        winnerName: result.winnerName,
+        scores: room.getScores(),
+      });
+    } else {
+      sendGusReaction(room, 'stamp', {
+        playerName: player?.name,
+        detail: `chose the ${result.stampEarned} stamp from Gus's Wild!`,
+      });
+    }
 
     io.to(room.roomCode).emit('turn-update', {
       activePlayerId: room.getActivePlayerId(),
@@ -363,4 +389,16 @@ server.listen(PORT, () => {
   ║                                           ║
   🐕 ═══════════════════════════════════════ 🐕
   `);
+
+  // Auto-generate missing images on startup
+  const missing = getMissingAssets();
+  if (missing.length > 0) {
+    console.log(`🎨 Generating ${missing.length} missing game images...`);
+    generateAllAssets((msg) => console.log(msg)).then(({ generated, failed }) => {
+      if (failed > 0) console.warn(`⚠️  ${failed} images failed — will retry next restart`);
+      else console.log('✅ All game images ready!');
+    });
+  } else {
+    console.log('✅ All game images already exist');
+  }
 });

@@ -120,11 +120,11 @@ const Wheel = forwardRef(({ onSpinComplete, disabled }, ref) => {
     ctx.textBaseline = 'middle';
     ctx.fillText('🐕', cx, cy);
 
-    // Pointer triangle at top
+    // Pointer triangle at top (pointing DOWN into the wheel)
     ctx.beginPath();
-    ctx.moveTo(cx, 2);
-    ctx.lineTo(cx - 14, 24);
-    ctx.lineTo(cx + 14, 24);
+    ctx.moveTo(cx, 24);
+    ctx.lineTo(cx - 14, 2);
+    ctx.lineTo(cx + 14, 2);
     ctx.closePath();
     ctx.fillStyle = '#FF6B6B';
     ctx.fill();

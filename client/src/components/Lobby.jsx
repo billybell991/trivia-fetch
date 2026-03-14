@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import GusMascot from './GusMascot';
 
 export default function Lobby({ onCreateRoom, onJoinRoom }) {
   const [name, setName] = useState('');
@@ -20,7 +21,7 @@ export default function Lobby({ onCreateRoom, onJoinRoom }) {
   return (
     <div className="lobby">
       <div className="logo-area">
-        <span className="gus-mascot">🐕</span>
+        <GusMascot size={100} className="gus-mascot" />
         <h1 className="game-title">Trivia Fetch!</h1>
         <p className="game-subtitle">Hosted by Gus the Goldendoodle 🎾</p>
       </div>

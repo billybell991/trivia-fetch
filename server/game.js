@@ -45,7 +45,6 @@ export class TriviaGame {
 
   // ── Player Management ─────────────────────────────────────
   addPlayer(socketId, name, playerId) {
-    if (this.state !== 'LOBBY') return { error: 'Game already in progress' };
     if (this.players.size >= 6) return { error: 'Room is full (max 6 players)' };
     if (this.players.has(socketId)) return { error: 'Already in room' };
 
@@ -202,11 +201,7 @@ export class TriviaGame {
       player.score++;
       this.streakCount++;
 
-      if (this.currentCategoryId === 'crown') {
-        // Crown challenge answered correctly with all stamps → WIN!
-        gameWon = true;
-        this.state = 'GAME_OVER';
-      } else if (this.currentCategoryId === 'wild') {
+      if (this.currentCategoryId === 'wild') {
         // Wild correct — player chooses a stamp they need
         const needed = CATEGORIES.filter(c => !player.pawStamps.includes(c.id));
         if (needed.length > 0) {
@@ -221,7 +216,13 @@ export class TriviaGame {
           player.pawStamps.push(this.currentCategoryId);
           stampEarned = this.currentCategoryId;
         }
-        this.state = 'SPINNING'; // spin again on correct!
+        // Check for win — all 8 stamps!
+        if (player.pawStamps.length >= CATEGORIES.length) {
+          gameWon = true;
+          this.state = 'GAME_OVER';
+        } else {
+          this.state = 'SPINNING'; // spin again on correct!
+        }
       } else {
         // Crown not ready — just spin again
         this.state = 'SPINNING';
@@ -278,12 +279,22 @@ export class TriviaGame {
     if (player.pawStamps.includes(categoryId)) return { error: 'Already have that stamp' };
 
     player.pawStamps.push(categoryId);
-    this.state = 'SPINNING';
+
+    // Check for win after choosing wild stamp
+    let gameWon = false;
+    if (player.pawStamps.length >= CATEGORIES.length) {
+      gameWon = true;
+      this.state = 'GAME_OVER';
+    } else {
+      this.state = 'SPINNING';
+    }
 
     return {
       success: true,
       stampEarned: categoryId,
       pawStamps: this.getAllPawStamps(),
+      gameWon,
+      winnerName: gameWon ? player.name : null,
     };
   }
 

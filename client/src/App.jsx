@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import socket from './socket';
 import Lobby from './components/Lobby';
 import Game from './components/Game';
+import GusMascot from './components/GusMascot';
 
 function getPlayerId() {
   let id = sessionStorage.getItem('tf-player-id');
@@ -126,7 +127,15 @@ export default function App() {
       setRoomCode(res.roomCode);
       setPlayers(res.players);
       setIsHost(false);
-      setScreen('waiting');
+
+      // If game is already in progress, jump straight into it
+      if (res.gameInProgress && res.gameState) {
+        setGameState(res.gameState);
+        setScreen('game');
+        showToast('Joined mid-game! 🐾');
+      } else {
+        setScreen('waiting');
+      }
     });
   };
 
@@ -151,7 +160,7 @@ export default function App() {
       {screen === 'waiting' && (
         <div className="waiting-room">
           <div className="logo-area">
-            <span className="gus-mascot">🐕</span>
+            <GusMascot size={80} className="gus-mascot" />
             <h1 className="game-title">Trivia Fetch!</h1>
           </div>
 
@@ -201,7 +210,7 @@ export default function App() {
 
       {screen === 'gameover' && winner && (
         <div className="game-over-screen">
-          <div className="winner-crown">👑</div>
+          <GusMascot size={120} variant="winner" className="gus-mascot" />
           <div className="winner-title">
             {winner.reason ? 'Game Over' : 'The Crown Goes To...'}
           </div>
@@ -210,7 +219,7 @@ export default function App() {
           </div>
 
           <div className="gus-bubble-area">
-            <span className="gus-icon">🐕</span>
+            <GusMascot size={48} variant="happy" className="gus-icon-img" />
             <div className="gus-bubble">{gusMessage}</div>
           </div>
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Wheel from './Wheel';
+import GusMascot from './GusMascot';
 
 const CATEGORIES = [
   { id: 'disney',      name: 'Disney',       emoji: '🏰', color: '#9B59B6' },
@@ -210,7 +211,7 @@ export default function Game({ socket, playerName, roomCode, gameState, setGameS
 
       {/* Gus Speech */}
       <div className="gus-bubble-area">
-        <span className="gus-icon">🐕</span>
+        <GusMascot size={48} variant="mascot" className="gus-icon-img" />
         <div className="gus-bubble" key={gusMessage}>{gusMessage}</div>
       </div>
 
@@ -242,7 +243,7 @@ export default function Game({ socket, playerName, roomCode, gameState, setGameS
             </div>
           )}
           <div style={{ marginTop: 8 }}>
-            <span className="gus-icon" style={{ fontSize: 28 }}>🐕</span>
+          <GusMascot size={48} variant="thinking" className="gus-icon-img" />
             <p style={{ color: 'var(--text-light)', fontWeight: 600, marginTop: 4 }}>
               Gus is fetching your question
               <span className="loading-dots">
@@ -302,7 +303,7 @@ export default function Game({ socket, playerName, roomCode, gameState, setGameS
         <div className="result-area">
           <div className={answerResult.correct ? 'bounce-in' : 'shake'}>
             <div className="result-icon">
-              {answerResult.timedOut ? '⏰' : answerResult.correct ? '🎉' : '😅'}
+              {answerResult.timedOut ? '⏰' : answerResult.correct ? <GusMascot size={80} variant="happy" /> : <GusMascot size={80} variant="wrong" />}
             </div>
           </div>
 
@@ -324,7 +325,7 @@ export default function Game({ socket, playerName, roomCode, gameState, setGameS
 
           {answerResult.funFact && (
             <div className="fun-fact">
-              <span className="fun-fact-label">🐕 Gus's Fun Fact: </span>
+              <span className="fun-fact-label"><GusMascot size={20} variant="mascot" className="inline-gus" /> Gus's Fun Fact: </span>
               {answerResult.funFact}
             </div>
           )}
@@ -340,7 +341,7 @@ export default function Game({ socket, playerName, roomCode, gameState, setGameS
       {/* ── CHOOSING STAMP (Gus's Wild reward) ── */}
       {phase === 'choosing' && choosingStamp && isMyTurn && (
         <div className="stamp-chooser">
-          <h3>🐕 Pick a Paw Stamp!</h3>
+          <h3><GusMascot size={28} variant="wild" className="inline-gus" /> Pick a Paw Stamp!</h3>
           <p style={{ textAlign: 'center', color: 'var(--text-light)', fontSize: 13, marginBottom: 12 }}>
             Gus's Wild reward — choose any stamp you need!
           </p>
